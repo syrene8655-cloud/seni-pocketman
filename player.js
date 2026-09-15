@@ -72,7 +72,7 @@ const sideMark=document.createElement('span');sideMark.className='side-mark';sid
 const customTitle=document.createElement('span');customTitle.className='custom-title';
 const thumb=document.createElement('img');thumb.className='custom-thumbnail';thumb.alt='';dynamic.append(thumb,customTitle);label.append(dynamic);
 const printDetails=document.createElement('div');printDetails.className='print-details';printDetails.setAttribute('aria-hidden','true');
-printDetails.innerHTML='<svg viewBox="0 0 414 167" preserveAspectRatio="none"><rect class="print-outline" x="9" y="7" width="396" height="152" rx="9"/><path class="writing-lines" d="M78 27H390M78 43H390"/><path class="edge-lines" d="M12 60H60M12 64H60M12 68H60M12 126H60M12 130H60M12 134H60M348 60H402M348 64H402M348 68H402M348 126H402M348 130H402M348 134H402"/><path class="window-scale" d="M191 89H228M191 85V93M200 87V91M209 85V93M218 87V91M228 85V93"/></svg><span class="record-mark">A</span><span class="print-footer">盒式磁带</span><span class="print-stereo">立体声</span>';
+printDetails.innerHTML='<svg viewBox="0 0 414 167" preserveAspectRatio="none"><rect class="print-outline" x="9" y="7" width="396" height="152" rx="9"/><path class="writing-lines" d="M78 27H390M78 43H390"/><path class="edge-lines" d="M12 60H60M12 64H60M12 68H60M12 126H60M12 130H60M12 134H60M348 60H402M348 64H402M348 68H402M348 126H402M348 130H402M348 134H402"/><path class="window-scale" d="M191 89H228M191 85V93M200 87V91M209 85V93M218 87V91M228 85V93"/></svg><span class="record-mark">A</span><span class="print-footer" translate="no">COMPACT CASSETTE</span><span class="print-stereo" translate="no">STEREO</span>';
 const artistLine=document.createElement('span');artistLine.className='print-artist';dynamic.append(printDetails,artistLine);
 // The back label is another printed face of the same cassette; audio is untouched.
 let cassetteSide='A',sideAnimation;
@@ -441,7 +441,7 @@ function renderCoverTreatment(){
  const scale=(fit.clientWidth||750)/750*zoom;
  const mode=cassetteCoverMode(info,label.offsetWidth*scale,label.offsetHeight*scale,window.devicePixelRatio||1);
  track.printStyle ||= cassettePrintStyle(track.title);dynamic.dataset.printStyle=track.printStyle;dynamic.dataset.edition=track.edition||'';
- printDetails.querySelector('.print-footer').textContent=track.edition==='neon'?'CITY POP · NEON NIGHT':'盒式磁带';
+ printDetails.querySelector('.print-footer').textContent=track.edition==='neon'?'CITY POP · NEON NIGHT':'COMPACT CASSETTE';
  sideMark.textContent=cassetteSide;dynamic.dataset.coverMode=mode;dynamic.style.display='block';label.querySelector('img').style.visibility='hidden';
  const notes=displayTrack(track);customTitle.textContent=notes.title;artistLine.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ');
  dynamic.style.setProperty('--paper-tint',track.plastic?.color||'#687276');

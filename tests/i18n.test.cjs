@@ -75,6 +75,6 @@ test('Shared cassette templates switch both ways and preserve album and artist v
  const values=()=>[...wrapper.querySelectorAll('.back-caption,.print-footer,.print-stereo,#rack-count')].map(el=>el.textContent);
  assert.deepEqual(values(),['Album','YEAR','TIME','COMPACT CASSETTE','STEREO','06 TAPES']);
  assert.equal(wrapper.querySelector('.back-album').textContent,'专辑');assert.equal(wrapper.querySelector('.back-artist').textContent,'立体声');
- w.PocketmanI18n.setLanguage('zh');await tick();assert.deepEqual(values(),['专辑','年份','时长','盒式磁带','立体声','06 盘磁带']);
+ w.PocketmanI18n.setLanguage('zh');await tick();assert.deepEqual(values(),['专辑','年份','时长','COMPACT CASSETTE','STEREO','06 盘磁带']);
  w.PocketmanI18n.setLanguage('en');await tick();assert.deepEqual(values(),['Album','YEAR','TIME','COMPACT CASSETTE','STEREO','06 TAPES']);
 });
