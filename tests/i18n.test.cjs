@@ -56,3 +56,13 @@ test('Daily recommendation nameplate switches languages without changing saved o
  daily.name='每日推荐';daily.source.id='12345';w.renderRackNameplate();await tick();assert.equal(label.textContent,'每日推荐');
  assert.equal(require('../i18n.js').rackName({name:'每日推荐'},'en'),'每日推荐');
 });
+
+test('Demo metadata is shared across cassette faces and UI without translating imported tracks',()=>{
+ const {trackMetadata}=require('../i18n.js');
+ const demo={src:'assets/neon-night.mp3',title:'霓虹夜行',artist:'艺术家不详',album:'都会循环',year:'不详',description:'霓虹夜行 · 都会循环版 · 原创演示曲'};
+ const en=trackMetadata(demo,'en');assert.deepEqual([en.title,en.artist,en.album,en.description],['Neon Night','Unknown Artist','City Loops','Neon Night · City Loops edition · Original demo']);
+ assert.equal(trackMetadata(demo,'zh'),demo);assert.equal(demo.title,'霓虹夜行');
+ const imported={...demo,src:'blob:local-file'};assert.equal(trackMetadata(imported,'en'),imported);
+ for(const origin of [{provider:'netease'},{provider:'apple'},{local:true}]){const external={...demo,...origin};assert.equal(trackMetadata(external,'en'),external)}
+ for(const [cn,en]of [['ALBUM / 专辑','ALBUM'],['YEAR / 年份','YEAR'],['TIME / 时长','TIME']])assert.equal(translate(cn),en);
+});

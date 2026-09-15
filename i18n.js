@@ -2,6 +2,9 @@
 // Presentation-only localization. Music metadata and saved rack names remain unchanged.
 (function(){
 const english={
+ "ALBUM / 专辑": "ALBUM",
+ "YEAR / 年份": "YEAR",
+ "TIME / 时长": "TIME",
  "语言": "Language",
  "外观": "Appearance",
  "摆在你喜欢的地方": "Make it your own",
@@ -130,7 +133,7 @@ const english={
  "查看封面与曲目原链接": "View the artwork and original track link.",
  "金属上沿": "Metal top edge",
  "拖动整组素材的位置": "Drag to move the whole player and rack.",
- "开始播放会自动收起磁带架与工具面板，听歌中仍可主动展开选曲。换带会自动合盖并播放选中的曲目。上一首 / 下一首直接切歌。默认演示曲《霓虹夜行》约 1 分钟；也可以导入自己的音乐。": "Playback folds away the rack and tools; you can reopen them to browse. Loading a tape closes the door and plays it. Previous / next switches tracks directly. The original demo 霓虹夜行 lasts about one minute. You can also import your own music.",
+ "开始播放会自动收起磁带架与工具面板，听歌中仍可主动展开选曲。换带会自动合盖并播放选中的曲目。上一首 / 下一首直接切歌。默认演示曲《霓虹夜行》约 1 分钟；也可以导入自己的音乐。": "Playback folds away the rack and tools; you can reopen them to browse. Loading a tape closes the door and plays it. Previous / next switches tracks directly. The original demo Neon Night lasts about one minute. You can also import your own music.",
  "返回曲目菜单": "Back to library",
  "返回曲目": "Back to library",
  "网易云音乐": "NetEase Music",
@@ -181,7 +184,7 @@ const english={
  "继续电台": "Resume station",
  "正在准备磁带架…": "Preparing the cassette rack…",
  "原创演示曲 · 从曲目中连接网易云 / Apple Music": "Original demo · Connect NetEase / Apple Music in Library",
- "原创演示曲《霓虹夜行》 · 可连接网易云音乐": "Original demo 霓虹夜行 · Connect to NetEase Music",
+ "原创演示曲《霓虹夜行》 · 可连接网易云音乐": "Original demo Neon Night · Connect to NetEase Music",
  "取出旧磁带…": "Removing the previous tape…",
  "正在装入磁带…": "Loading the tape…",
  "合上磁带仓…": "Closing the cassette door…",
@@ -413,15 +416,15 @@ function translate(value){
  return source;
 }
 // Only the bundled fictional demo has localized music metadata.
-function bookletMetadata(track,language='en'){
- if(language==='en'&&track.src==='assets/neon-night.mp3')return {...track,title:'Neon Night',artist:'Unknown Artist',album:'City Loops'};
+function trackMetadata(track,language='en'){
+ if(language==='en'&&!track.provider&&!track.local&&track.src==='assets/neon-night.mp3')return {...track,title:'Neon Night',artist:'Unknown Artist',album:'City Loops',description:'Neon Night · City Loops edition · Original demo'};
  return track;
 }
 function rackName(rack,language='en'){
  if(!rack.nameIsCustom&&rack.source?.provider==='netease'&&rack.source.id==='daily'&&['每日推荐','Daily picks','Daily Picks'].includes(rack.name))return language==='en'?'Daily Picks':'每日推荐';
  return rack.name;
 }
-const api={translate,english,bookletMetadata,rackName};
+const api={translate,english,trackMetadata,rackName};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(typeof document==='undefined')return;
 const storageKey='pocketman.language';

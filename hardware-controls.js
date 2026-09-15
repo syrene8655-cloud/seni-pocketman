@@ -36,8 +36,9 @@ function renderLikeKey(){
  const t=currentLikeTrack()||{title:'电台歌曲准备中'},liked=t.provider==='apple'?appleFavorites.state(t):t.provider==='netease'&&likedSongs?.has(String(t.id));
  preferenceKeys.like.setAttribute('aria-pressed',String(!!liked));preferenceKeys.like.setAttribute('aria-busy',String(likeWriteBusy));
  preferenceKeys.like.disabled=likeWriteBusy||!currentLikeTrack();
- preferenceKeys.like.setAttribute('aria-label',(liked?'取消喜欢':'喜欢')+'：'+t.title+(t.provider==='apple'?'（同步 Apple Music）':t.provider==='netease'?'':'（需云端歌曲）'));
+ preferenceKeys.like.setAttribute('aria-label',(liked?'取消喜欢':'喜欢')+'：'+displayTrack(t).title+(t.provider==='apple'?'（同步 Apple Music）':t.provider==='netease'?'':'（需云端歌曲）'));
 }
+document.addEventListener('pocketman:languagechange',renderLikeKey);
 async function refreshAppleLike(){
  const track=currentLikeTrack(),version=appleFavorites.version;
  if(!track||track.provider!=='apple'||likeWriteBusy)return;

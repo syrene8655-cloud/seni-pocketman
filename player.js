@@ -87,15 +87,16 @@ function trackYear(track){
  const stamp=Number(track.publishTime);if(Number.isFinite(stamp)&&stamp>0){const year=new Date(stamp).getUTCFullYear();if(year>=1000&&year<=2999)return String(year)}
  return value==='不详'?'不详':'未提供';
 }
+function displayTrack(track){return window.PocketmanI18n?.trackMetadata(track,window.PocketmanI18n.getLanguage())||track}
 function renderBackDetails(){
- const t=tracks[current];backDetails.querySelector('.back-album').textContent=t.album||'专辑未提供';
- backDetails.querySelector('.back-artist').textContent=t.artist||'歌手未提供';
- backDetails.querySelector('.back-year').textContent=trackYear(t);
+ const t=displayTrack(tracks[current]);backDetails.querySelector('.back-album').textContent=t.album||PocketmanI18n.text('专辑未提供');
+ backDetails.querySelector('.back-artist').textContent=t.artist||PocketmanI18n.text('歌手未提供');
+ const year=trackYear(t),yearLabel=backDetails.querySelector('.back-year');yearLabel.textContent=year;yearLabel.dataset.missing=String(!/^\d{4}$/.test(year));
  const duration=Number(t.duration)>0?Number(t.duration):audio.duration;
  backDetails.querySelector('.back-duration').textContent=Number.isFinite(duration)&&duration>0?format(duration):'未提供';
  backDetails.querySelector('.back-song').textContent=t.title;backDetails.querySelector('.back-song').title=t.title;
  backDetails.querySelector('.back-source').textContent=t.provider==='apple'?'APPLE MUSIC':t.provider==='netease'?'NETEASE MUSIC':t.local?'LOCAL MUSIC':'ORIGINAL DEMO';
- backDetails.querySelector('.back-album').title=t.album||'专辑未提供';backDetails.querySelector('.back-artist').title=t.artist||'歌手未提供';
+ backDetails.querySelector('.back-album').title=t.album||PocketmanI18n.text('专辑未提供');backDetails.querySelector('.back-artist').title=t.artist||PocketmanI18n.text('歌手未提供');
 }
 function setCassetteSide(side,{animate=false}={}){
  sideAnimation?.cancel();sideAnimation=null;cassetteSide=side;dynamic.dataset.side=side;sideMark.textContent=side;printDetails.querySelector('.record-mark').textContent=side;
@@ -269,7 +270,7 @@ async function beginSwap(index){
  await finishLoading(version);
 }
 function pullCase(index){
- pulled=index;document.querySelectorAll('.case').forEach(b=>{const i=Number(b.dataset.index);b.classList.toggle('pulled',i===index);b.setAttribute('aria-pressed',String(i===index));b.setAttribute('aria-label',(i===index?'装入 ':'抽出 ')+tracks[i].title+' 磁带盒')});
+ pulled=index;document.querySelectorAll('.case').forEach(b=>{const i=Number(b.dataset.index);b.classList.toggle('pulled',i===index);b.setAttribute('aria-pressed',String(i===index));b.setAttribute('aria-label',(i===index?'装入 ':'抽出 ')+displayTrack(tracks[i]).title+' 磁带盒')});
  $('#rack-hint').textContent=index<0?'点一下抽出 · 再点装入':'再点装入 · 点击别处放回';
  renderBooklet();
 }
@@ -300,7 +301,7 @@ function renderBooklet(){
    art.src=cover;art.hidden=false;
   }).catch(()=>{if(version===bookletArtworkVersion)delete art.dataset.cover});
  }
- const language=window.PocketmanI18n?.getLanguage()||'en',notes=window.PocketmanI18n?.bookletMetadata(track,language)||track;
+ const language=window.PocketmanI18n?.getLanguage()||'en',notes=window.PocketmanI18n?.trackMetadata(track,language)||track;
  $('#booklet-track-label').textContent=language==='en'?'Track':'曲目';
  $('#booklet-title').textContent=notes.title;
  $('#booklet-artist').textContent=notes.artist||'—';$('#booklet-album').textContent=notes.album||'—';
@@ -379,8 +380,8 @@ function renderRack(){
   const src=t.cover;void loadCoverImage(src).then(()=>{if(t.cover===src){cover.src=src;cover.hidden=false}}).catch(()=>{});
   if((!t.coverInfo||!t.coverInfo.valid&&Date.now()>=(t.coverInfo.retryAfter||0))&&!t.coverPending){t.coverPending=true;void matchTrackPlastic(t).finally(()=>t.coverPending=false)}
  }
- const copy=document.createElement('span');copy.className='spine-copy';const title=document.createElement('span');title.className='case-name';title.textContent=t.title;
- const detail=document.createElement('span');detail.className='spine-detail';detail.textContent=[t.artist,t.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'APPLE MUSIC':t.provider==='netease'?'NETEASE MUSIC':t.local?'LOCAL AUDIO':'ORIGINAL DEMO');copy.append(title,detail);
+ const notes=displayTrack(t);const copy=document.createElement('span');copy.className='spine-copy';const title=document.createElement('span');title.className='case-name';title.textContent=notes.title;
+ const detail=document.createElement('span');detail.className='spine-detail';detail.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'APPLE MUSIC':t.provider==='netease'?'NETEASE MUSIC':t.local?'LOCAL AUDIO':'ORIGINAL DEMO');copy.append(title,detail);
  const catalog=document.createElement('span');catalog.className='spine-catalog';catalog.setAttribute('aria-hidden','true');const number=document.createElement('span');number.textContent=String(offset+row+1).padStart(3,'0');const format=document.createElement('span');format.textContent='CASSETTE';catalog.append(number,format);
  paper.append(cover,copy,catalog);canvas.append(paper);surface.append(canvas);const frame=document.createElement('span');frame.className='spine-frame';frame.setAttribute('aria-hidden','true');surface.append(frame);b.append(top,side,surface);spineSizeObserver.observe(b);
  b.onclick=()=>{if(swapping)return;if(pulled===i){choosePlaybackRack();beginSwap(i)}else pullCase(i)};slot.append(b);slots.append(slot)});
@@ -419,7 +420,7 @@ function keySound(name){
 }
 function playKeySound(){keySound('play')}
 function togglePlay(){if(swapping)return;if(loading){keySound('pause');requestId++;loading=false;audio.pause();playbackUI()}else if(audio.paused){playKeySound();play({settleUI:true})}else{keySound('pause');requestId++;audio.pause()}}
-function renderTracks(){const list=$('#track-list');list.replaceChildren();visibleRackRows().slice(0,30).forEach(({t,index:i})=>{const b=document.createElement('button');b.className='track';b.setAttribute('aria-current',String(i===current));b.setAttribute('aria-label','装入 '+t.title);const img=new Image();img.loading='lazy';img.fetchPriority='low';img.src=t.cover;img.alt='';const name=document.createElement('span');name.textContent=t.title;const tag=document.createElement('small');tag.textContent=[t.artist,t.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'Apple Music':t.provider==='netease'?'网易云音乐':t.local?'本地音乐':'原创示例');b.append(img,name,tag);b.onclick=()=>{choosePlaybackRack();closeModal($('#library'));beginSwap(i)};list.append(b)});$('#track-count').textContent=String(visibleRackRows().length).padStart(2,'0');renderRack()}
+function renderTracks(){const list=$('#track-list');list.replaceChildren();visibleRackRows().slice(0,30).forEach(({t:rawTrack,index:i})=>{const t=displayTrack(rawTrack),b=document.createElement('button');b.className='track';b.setAttribute('aria-current',String(i===current));b.setAttribute('aria-label','装入 '+t.title);const img=new Image();img.loading='lazy';img.fetchPriority='low';img.src=t.cover;img.alt='';const name=document.createElement('span');name.textContent=t.title;const tag=document.createElement('small');tag.textContent=[t.artist,t.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'Apple Music':t.provider==='netease'?'网易云音乐':t.local?'本地音乐':'原创示例');b.append(img,name,tag);b.onclick=()=>{choosePlaybackRack();closeModal($('#library'));beginSwap(i)};list.append(b)});$('#track-count').textContent=String(visibleRackRows().length).padStart(2,'0');renderRack()}
 function applyPlasticUI(){
  const t=tracks[current],plastic=plasticPalette.find(p=>p.id===t.plastic?.id)||plasticPalette[1];
  machine.style.setProperty('--accent',plastic.color);
@@ -440,7 +441,7 @@ function renderCoverTreatment(){
  track.printStyle ||= cassettePrintStyle(track.title);dynamic.dataset.printStyle=track.printStyle;dynamic.dataset.edition=track.edition||'';
  printDetails.querySelector('.print-footer').textContent=track.edition==='neon'?'CITY POP · NEON NIGHT':'COMPACT CASSETTE';
  sideMark.textContent=cassetteSide;dynamic.dataset.coverMode=mode;dynamic.style.display='block';label.querySelector('img').style.visibility='hidden';
- customTitle.textContent=track.title;artistLine.textContent=[track.artist,track.album].filter(Boolean).join(' · ');
+ const notes=displayTrack(track);customTitle.textContent=notes.title;artistLine.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ');
  dynamic.style.setProperty('--paper-tint',track.plastic?.color||'#687276');
  for(const region of ['top','bottom']){
   const ink=info?.inks?.[region]||'#ffffff';dynamic.style.setProperty('--cover-'+region+'-ink',ink);
@@ -466,11 +467,12 @@ function updateCoverSource(track){
  if(url){link.href=url;link.textContent='在 '+service+' 打开 ↗';link.setAttribute('aria-label','在 '+service+' 打开《'+track.title+'》')}
  else{link.removeAttribute('href');link.removeAttribute('aria-label')}
 }
-function artUI(){renderBackDetails();const t=tracks[current], forest=t.variant==='forest';updateCoverSource(t);label.querySelector('img').src=forest?'assets/album-label-forest.f7c07bdec378.webp':'assets/album-label.f038d7dc76ca.webp';shell.querySelector('img').src='assets/cassette-shell.3d71f41337e9.webp';
+function artUI({animate=true}={}){renderBackDetails();const t=displayTrack(tracks[current]), forest=t.variant==='forest';updateCoverSource(t);label.querySelector('img').src=forest?'assets/album-label-forest.f7c07bdec378.webp':'assets/album-label.f038d7dc76ca.webp';shell.querySelector('img').src='assets/cassette-shell.3d71f41337e9.webp';
  renderCoverTreatment();
  $('#track-name').textContent=t.title;$('#track-name').title=t.title;$('#cover-title').textContent=t.title;$('#large-cover').src=t.cover;$('#cover-description').textContent=t.description;$('#source-note').textContent=t.provider==='apple'?(t.station?'Apple Music · '+t.stationName:'Apple Music · 音乐由 Apple Music 提供'):t.provider==='netease'?'网易云音乐'+(t.trial?' · 当前为试听片段':''):t.local?'本地音乐 · 仅在此浏览器中播放':'原创演示曲 · 从曲目中连接网易云 / Apple Music';
- if(!reduceMotion.matches)label.animate([{opacity:.25},{opacity:1}],{duration:320,easing:'ease-out'});renderTracks();
+ if(animate&&!reduceMotion.matches)label.animate([{opacity:.25},{opacity:1}],{duration:320,easing:'ease-out'});renderTracks();
 }
+document.addEventListener('pocketman:languagechange',()=>{artUI({animate:false});if(rackUIReady&&managedRackId&&libraryPage==='editor')renderRackEditor()});
 function selectTrack(index,autoplay=!audio.paused,{ritual=false,keepHistory=false}={}){clearPlaybackWatch();clearPlaybackFailure();cancelStopFeedback();stopped=false;if(!keepHistory)randomHistory=[];if(!ritual){cancelSwap();pullCase(-1);if(doorOpen)setDoor(false)}requestId++;audio.pause();loading=false;current=(index+tracks.length)%tracks.length;audio.use(tracks[current]);setCassetteSide('A');if(tracks[current].src)audio.src=tracks[current].src;else audio.removeAttribute('src');audio.load();artUI();if(tracks[current].provider&&!tracks[current].coverInfo?.valid)matchTrackPlastic(tracks[current]);timeUI();playbackUI();document.dispatchEvent(new Event('cassette-trackchange'));if(autoplay)play()}
 audio.addEventListener('stationitemchange',()=>{
  const track=tracks[current];if(track!==audio.track||!track.station)return;
