@@ -449,7 +449,7 @@ body.browsing .shelf-close-symbol{font:300 30px/1 sans-serif;color:#27282c;trans
 .dynamic-label[data-cover-mode=full] .back-facts{left:700px;right:34px;top:114px;padding:10px 8px;background:#f3eddf url(assets/cassette-label-paper.1b8ae731eb42.webp) center/cover;border:1.2px solid #56605b;color:var(--print-ink)}
 .back-facts .back-caption{font-size:12px;letter-spacing:0;white-space:normal;overflow-wrap:anywhere}
 .back-year{font-size:22px;line-height:1.3;font-weight:600;white-space:nowrap}.back-facts .back-caption:nth-of-type(2){margin-top:12px}
-.back-year[data-missing=true]{font-size:14px;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.back-year[data-missing=true],.back-duration[data-missing=true]{font-size:14px;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 .back-duration{font-size:20px;line-height:1.3;font-variant-numeric:tabular-nums}
 .back-footer{position:absolute;left:46px;right:46px;top:290px;display:flex;align-items:center;justify-content:space-between;gap:24px;font-size:16px;line-height:1.3;color:#faf5e9}
 .back-song{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.back-source{flex:none;font-size:12px;letter-spacing:1px}
@@ -640,3 +640,5 @@ body:not(.browsing):has(.machine.playing) .corner-logo{opacity:.88;visibility:vi
 
 /* Keep language beside appearance controls; labels keep their native spelling. */
 .language-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:16px 20px;background:#fff;border-radius:18px;font-size:14px}.language-options{display:flex;gap:4px;padding:4px;background:#f0f0f2;border-radius:11px}.language-options button{min-height:36px;min-width:72px;padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#62626b;font:inherit;cursor:pointer}.language-options button[aria-pressed=true]{background:#fff;color:#df001b;box-shadow:0 1px 3px #0001}.language-options button:focus-visible{outline:2px solid #df001b;outline-offset:2px}html[lang=en] .t-modal p,html[lang=en] .t-modal dd{line-height:1.55}html[lang=en] .setting{gap:14px}
+
+.back-caption,.back-source{text-transform:uppercase}

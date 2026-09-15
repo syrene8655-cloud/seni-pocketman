@@ -26,7 +26,7 @@ test('Paper card uses English demo notes, restores Chinese and preserves importe
  await tick();
  const notes=()=>['booklet-track-label','booklet-title','booklet-artist','booklet-album'].map(id=>d.getElementById(id).textContent);
  assert.deepEqual(notes(),['Track','Neon Night','Unknown Artist','City Loops']);
- assert.match(tag.querySelector('header').textContent,/TAPE NOTES \/ MUSIC/);
+ assert.match(tag.querySelector('header').textContent,/TAPE NOTES/);
  assert.deepEqual([...tag.querySelectorAll('dt')].map(el=>el.textContent),['Artist','Album']);
  assert.equal(d.querySelector('#booklet-number').textContent,'01');
  assert.equal(d.querySelector('#booklet-art').getAttribute('alt'),'Selected tape artwork');
@@ -65,4 +65,16 @@ test('Demo metadata is shared across cassette faces and UI without translating i
  const imported={...demo,src:'blob:local-file'};assert.equal(trackMetadata(imported,'en'),imported);
  for(const origin of [{provider:'netease'},{provider:'apple'},{local:true}]){const external={...demo,...origin};assert.equal(trackMetadata(external,'en'),external)}
  for(const [cn,en]of [['ALBUM / 专辑','ALBUM'],['YEAR / 年份','YEAR'],['TIME / 时长','TIME']])assert.equal(translate(cn),en);
+});
+
+test('Shared cassette templates switch both ways and preserve album and artist values',async t=>{
+ const dom=fixture();t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+ const player=fs.readFileSync(path.join(__dirname,'../player.js'),'utf8');
+ const wrapper=d.createElement('section');wrapper.innerHTML=player.match(/backDetails\.innerHTML='([^']+)'/)[1]+player.match(/printDetails\.innerHTML='([^']+)'/)[1]+'<span id="rack-count">06 盘磁带</span>';
+ wrapper.querySelector('.back-album').textContent='专辑';wrapper.querySelector('.back-artist').textContent='立体声';d.body.append(wrapper);await tick();
+ const values=()=>[...wrapper.querySelectorAll('.back-caption,.print-footer,.print-stereo,#rack-count')].map(el=>el.textContent);
+ assert.deepEqual(values(),['Album','YEAR','TIME','COMPACT CASSETTE','STEREO','06 TAPES']);
+ assert.equal(wrapper.querySelector('.back-album').textContent,'专辑');assert.equal(wrapper.querySelector('.back-artist').textContent,'立体声');
+ w.PocketmanI18n.setLanguage('zh');await tick();assert.deepEqual(values(),['专辑','年份','时长','盒式磁带','立体声','06 盘磁带']);
+ w.PocketmanI18n.setLanguage('en');await tick();assert.deepEqual(values(),['Album','YEAR','TIME','COMPACT CASSETTE','STEREO','06 TAPES']);
 });

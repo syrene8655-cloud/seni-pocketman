@@ -71,12 +71,12 @@ const sideMark=document.createElement('span');sideMark.className='side-mark';sid
 const customTitle=document.createElement('span');customTitle.className='custom-title';
 const thumb=document.createElement('img');thumb.className='custom-thumbnail';thumb.alt='';dynamic.append(thumb,customTitle);label.append(dynamic);
 const printDetails=document.createElement('div');printDetails.className='print-details';printDetails.setAttribute('aria-hidden','true');
-printDetails.innerHTML='<svg viewBox="0 0 414 167" preserveAspectRatio="none"><rect class="print-outline" x="9" y="7" width="396" height="152" rx="9"/><path class="writing-lines" d="M78 27H390M78 43H390"/><path class="edge-lines" d="M12 60H60M12 64H60M12 68H60M12 126H60M12 130H60M12 134H60M348 60H402M348 64H402M348 68H402M348 126H402M348 130H402M348 134H402"/><path class="window-scale" d="M191 89H228M191 85V93M200 87V91M209 85V93M218 87V91M228 85V93"/></svg><span class="record-mark">A</span><span class="print-footer">COMPACT CASSETTE</span><span class="print-stereo">STEREO</span>';
+printDetails.innerHTML='<svg viewBox="0 0 414 167" preserveAspectRatio="none"><rect class="print-outline" x="9" y="7" width="396" height="152" rx="9"/><path class="writing-lines" d="M78 27H390M78 43H390"/><path class="edge-lines" d="M12 60H60M12 64H60M12 68H60M12 126H60M12 130H60M12 134H60M348 60H402M348 64H402M348 68H402M348 126H402M348 130H402M348 134H402"/><path class="window-scale" d="M191 89H228M191 85V93M200 87V91M209 85V93M218 87V91M228 85V93"/></svg><span class="record-mark">A</span><span class="print-footer">盒式磁带</span><span class="print-stereo">立体声</span>';
 const artistLine=document.createElement('span');artistLine.className='print-artist';dynamic.append(printDetails,artistLine);
 // The back label is another printed face of the same cassette; audio is untouched.
 let cassetteSide='A',sideAnimation;
 const backDetails=document.createElement('div');backDetails.className='back-details';backDetails.id='cassette-back-details';backDetails.hidden=true;
-backDetails.innerHTML='<div class="back-heading"><span class="back-caption">ALBUM / 专辑</span><strong class="back-album"></strong><span class="back-artist"></span></div><div class="back-facts"><span class="back-caption">YEAR / 年份</span><strong class="back-year"></strong><span class="back-caption">TIME / 时长</span><span class="back-duration"></span></div><div class="back-footer"><span class="back-song"></span><span class="back-source"></span></div>';
+backDetails.innerHTML='<div class="back-heading"><span class="back-caption">专辑</span><strong class="back-album"></strong><span class="back-artist"></span></div><div class="back-facts"><span class="back-caption">年份</span><strong class="back-year"></strong><span class="back-caption">时长</span><span class="back-duration"></span></div><div class="back-footer"><span class="back-song"></span><span class="back-source"></span></div>';
 dynamic.append(backDetails);
 const flipHit=document.createElement('button');flipHit.className='cassette-flip-hit';flipHit.id='cassette-flip';flipHit.setAttribute('aria-controls',backDetails.id);machine.append(flipHit);
 const shellBounds=geometry.find(l=>l.id==='cassette-shell').b;
@@ -88,14 +88,15 @@ function trackYear(track){
  return value==='不详'?'不详':'未提供';
 }
 function displayTrack(track){return window.PocketmanI18n?.trackMetadata(track,window.PocketmanI18n.getLanguage())||track}
+function trackSourceLabel(t){return PocketmanI18n.text(t.provider==='apple'?'Apple Music':t.provider==='netease'?'网易云音乐':t.local?'本地音乐':'原创演示曲')}
 function renderBackDetails(){
  const t=displayTrack(tracks[current]);backDetails.querySelector('.back-album').textContent=t.album||PocketmanI18n.text('专辑未提供');
  backDetails.querySelector('.back-artist').textContent=t.artist||PocketmanI18n.text('歌手未提供');
  const year=trackYear(t),yearLabel=backDetails.querySelector('.back-year');yearLabel.textContent=year;yearLabel.dataset.missing=String(!/^\d{4}$/.test(year));
  const duration=Number(t.duration)>0?Number(t.duration):audio.duration;
- backDetails.querySelector('.back-duration').textContent=Number.isFinite(duration)&&duration>0?format(duration):'未提供';
+ const durationLabel=backDetails.querySelector('.back-duration'),hasDuration=Number.isFinite(duration)&&duration>0;durationLabel.textContent=hasDuration?format(duration):'未提供';durationLabel.dataset.missing=String(!hasDuration);
  backDetails.querySelector('.back-song').textContent=t.title;backDetails.querySelector('.back-song').title=t.title;
- backDetails.querySelector('.back-source').textContent=t.provider==='apple'?'APPLE MUSIC':t.provider==='netease'?'NETEASE MUSIC':t.local?'LOCAL MUSIC':'ORIGINAL DEMO';
+ backDetails.querySelector('.back-source').textContent=trackSourceLabel(t);
  backDetails.querySelector('.back-album').title=t.album||PocketmanI18n.text('专辑未提供');backDetails.querySelector('.back-artist').title=t.artist||PocketmanI18n.text('歌手未提供');
 }
 function setCassetteSide(side,{animate=false}={}){
@@ -381,12 +382,12 @@ function renderRack(){
   if((!t.coverInfo||!t.coverInfo.valid&&Date.now()>=(t.coverInfo.retryAfter||0))&&!t.coverPending){t.coverPending=true;void matchTrackPlastic(t).finally(()=>t.coverPending=false)}
  }
  const notes=displayTrack(t);const copy=document.createElement('span');copy.className='spine-copy';const title=document.createElement('span');title.className='case-name';title.textContent=notes.title;
- const detail=document.createElement('span');detail.className='spine-detail';detail.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'APPLE MUSIC':t.provider==='netease'?'NETEASE MUSIC':t.local?'LOCAL AUDIO':'ORIGINAL DEMO');copy.append(title,detail);
- const catalog=document.createElement('span');catalog.className='spine-catalog';catalog.setAttribute('aria-hidden','true');const number=document.createElement('span');number.textContent=String(offset+row+1).padStart(3,'0');const format=document.createElement('span');format.textContent='CASSETTE';catalog.append(number,format);
+ const detail=document.createElement('span');detail.className='spine-detail';detail.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ')||trackSourceLabel(t);copy.append(title,detail);
+ const catalog=document.createElement('span');catalog.className='spine-catalog';catalog.setAttribute('aria-hidden','true');const number=document.createElement('span');number.textContent=String(offset+row+1).padStart(3,'0');const format=document.createElement('span');format.textContent='磁带';catalog.append(number,format);
  paper.append(cover,copy,catalog);canvas.append(paper);surface.append(canvas);const frame=document.createElement('span');frame.className='spine-frame';frame.setAttribute('aria-hidden','true');surface.append(frame);b.append(top,side,surface);spineSizeObserver.observe(b);
  b.onclick=()=>{if(swapping)return;if(pulled===i){choosePlaybackRack();beginSwap(i)}else pullCase(i)};slot.append(b);slots.append(slot)});
  for(let i=Math.min(6,rackViewRows.length-offset);i<6;i++){const blank=document.createElement('div');blank.className='rack-slot empty';blank.setAttribute('aria-hidden','true');slots.append(blank)}
- $('#rack-count').textContent=String(rackViewRows.length).padStart(2,'0')+' TAPES';pullCase(pulled);slots.scrollTop=position;updateRackPosition();requestAnimationFrame(updateRackProjections);applyPlasticUI();refreshRackControls();
+ $('#rack-count').textContent=String(rackViewRows.length).padStart(2,'0')+' 盘磁带';pullCase(pulled);slots.scrollTop=position;updateRackPosition();requestAnimationFrame(updateRackProjections);applyPlasticUI();refreshRackControls();
 }
 document.addEventListener('pointerdown',e=>{if(pulled>=0&&!e.target.closest('.case, #tape-booklet'))pullCase(-1)});
 document.addEventListener('focusin',e=>{if(pulled>=0&&!e.target.closest('.case, #tape-booklet'))pullCase(-1)});
@@ -420,7 +421,7 @@ function keySound(name){
 }
 function playKeySound(){keySound('play')}
 function togglePlay(){if(swapping)return;if(loading){keySound('pause');requestId++;loading=false;audio.pause();playbackUI()}else if(audio.paused){playKeySound();play({settleUI:true})}else{keySound('pause');requestId++;audio.pause()}}
-function renderTracks(){const list=$('#track-list');list.replaceChildren();visibleRackRows().slice(0,30).forEach(({t:rawTrack,index:i})=>{const t=displayTrack(rawTrack),b=document.createElement('button');b.className='track';b.setAttribute('aria-current',String(i===current));b.setAttribute('aria-label','装入 '+t.title);const img=new Image();img.loading='lazy';img.fetchPriority='low';img.src=t.cover;img.alt='';const name=document.createElement('span');name.textContent=t.title;const tag=document.createElement('small');tag.textContent=[t.artist,t.album].filter(Boolean).join(' · ')||(t.provider==='apple'?'Apple Music':t.provider==='netease'?'网易云音乐':t.local?'本地音乐':'原创示例');b.append(img,name,tag);b.onclick=()=>{choosePlaybackRack();closeModal($('#library'));beginSwap(i)};list.append(b)});$('#track-count').textContent=String(visibleRackRows().length).padStart(2,'0');renderRack()}
+function renderTracks(){const list=$('#track-list');list.replaceChildren();visibleRackRows().slice(0,30).forEach(({t:rawTrack,index:i})=>{const t=displayTrack(rawTrack),b=document.createElement('button');b.className='track';b.setAttribute('aria-current',String(i===current));b.setAttribute('aria-label','装入 '+t.title);const img=new Image();img.loading='lazy';img.fetchPriority='low';img.src=t.cover;img.alt='';const name=document.createElement('span');name.textContent=t.title;const tag=document.createElement('small');tag.textContent=[t.artist,t.album].filter(Boolean).join(' · ')||trackSourceLabel(t);b.append(img,name,tag);b.onclick=()=>{choosePlaybackRack();closeModal($('#library'));beginSwap(i)};list.append(b)});$('#track-count').textContent=String(visibleRackRows().length).padStart(2,'0');renderRack()}
 function applyPlasticUI(){
  const t=tracks[current],plastic=plasticPalette.find(p=>p.id===t.plastic?.id)||plasticPalette[1];
  machine.style.setProperty('--accent',plastic.color);
@@ -439,7 +440,7 @@ function renderCoverTreatment(){
  const scale=(fit.clientWidth||750)/750*zoom;
  const mode=cassetteCoverMode(info,label.offsetWidth*scale,label.offsetHeight*scale,window.devicePixelRatio||1);
  track.printStyle ||= cassettePrintStyle(track.title);dynamic.dataset.printStyle=track.printStyle;dynamic.dataset.edition=track.edition||'';
- printDetails.querySelector('.print-footer').textContent=track.edition==='neon'?'CITY POP · NEON NIGHT':'COMPACT CASSETTE';
+ printDetails.querySelector('.print-footer').textContent=track.edition==='neon'?'CITY POP · NEON NIGHT':'盒式磁带';
  sideMark.textContent=cassetteSide;dynamic.dataset.coverMode=mode;dynamic.style.display='block';label.querySelector('img').style.visibility='hidden';
  const notes=displayTrack(track);customTitle.textContent=notes.title;artistLine.textContent=[notes.artist,notes.album].filter(Boolean).join(' · ');
  dynamic.style.setProperty('--paper-tint',track.plastic?.color||'#687276');

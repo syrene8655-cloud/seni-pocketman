@@ -2,6 +2,13 @@
 // Presentation-only localization. Music metadata and saved rack names remain unchanged.
 (function(){
 const english={
+ "盒式磁带": "COMPACT CASSETTE",
+ "立体声": "STEREO",
+ "磁带": "CASSETTE",
+ "磁带资料": "TAPE NOTES",
+ "年份": "YEAR",
+ "时长": "TIME",
+ "原创演示曲": "Original demo",
  "ALBUM / 专辑": "ALBUM",
  "YEAR / 年份": "YEAR",
  "TIME / 时长": "TIME",
@@ -378,6 +385,7 @@ const english={
  "（同步 Apple Music）": "(syncs with Apple Music)"
 };
 const patterns=[
+ [/^(\d+) 盘磁带$/,(_,n)=>`${n} TAPES`],
  [/^([\s\S]+) 可刷新二维码重试。$/,(_,error)=>`${translate(error)} Refresh the QR code to try again.`],
  [/^加入 ([\s\S]+) 到磁带架$/,(_,name)=>`Add ${name} to rack`],
  [/^(打开|加入|开始收听) ([\s\S]+)$/,(_,verb,name)=>`${translate(verb)} ${name}`],
