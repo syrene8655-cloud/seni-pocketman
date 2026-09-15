@@ -300,10 +300,13 @@ function renderBooklet(){
    art.src=cover;art.hidden=false;
   }).catch(()=>{if(version===bookletArtworkVersion)delete art.dataset.cover});
  }
- $('#booklet-title').textContent=track.title;
- $('#booklet-artist').textContent=track.artist||'—';$('#booklet-album').textContent=track.album||'—';
+ const language=window.PocketmanI18n?.getLanguage()||'en',notes=window.PocketmanI18n?.bookletMetadata(track,language)||track;
+ $('#booklet-track-label').textContent=language==='en'?'Track':'曲目';
+ $('#booklet-title').textContent=notes.title;
+ $('#booklet-artist').textContent=notes.artist||'—';$('#booklet-album').textContent=notes.album||'—';
  $('#booklet-number').textContent=String(pulled+1).padStart(2,'0');
 }
+document.addEventListener('pocketman:languagechange',renderBooklet);
 // A fixed physical rack is a window onto the full playlist, not a capacity limit.
 function rackWindowOffset(){return Math.max(0,Math.min(Math.floor(rackStore?.rack().scroll||0),Math.max(0,rackViewRows.length-6)))}
 function updateRackPosition(){

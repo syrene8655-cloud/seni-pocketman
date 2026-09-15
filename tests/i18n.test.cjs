@@ -12,3 +12,31 @@ test('Blocked local storage falls back to English and language switching still w
 
 test('Printed artists, legacy track list and provider playlist names are never translated',async t=>{const dom=fixture();t.after(()=>dom.window.close());const d=dom.window.document;const region=d.createElement('section');region.innerHTML='<span class="print-artist">外观 · 我的电台</span><div id="track-list"><button class="track"><span>播放</span><small>停止</small></button></div><h3 id="cloud-results-title"></h3>';d.body.append(region);dom.window.PocketmanI18n.setNamedTitle(d.querySelector('#cloud-results-title'),'外观 · 我的电台',3);await tick();assert.equal(d.querySelector('.print-artist').textContent,'外观 · 我的电台');assert.equal(d.querySelector('.track span').textContent,'播放');assert.equal(d.querySelector('.track small').textContent,'停止');assert.equal(d.querySelector('#cloud-results-title').textContent,'外观 · 我的电台 · 3 tracks');dom.window.PocketmanI18n.setLanguage('zh');assert.equal(d.querySelector('#cloud-results-title').textContent,'外观 · 我的电台 · 3 首')});
 test('QR retry suffix translates the nested error without changing unknown upstream detail',()=>{assert.equal(translate('连接超时，请检查网络后重试。 可刷新二维码重试。'),'Connection timed out. Check your network and try again. Refresh the QR code to try again.');assert.equal(translate('upstream detail X-42 可刷新二维码重试。'),'upstream detail X-42 Refresh the QR code to try again.')});
+
+test('Paper card uses English demo notes, restores Chinese and preserves imported metadata',async t=>{
+ const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+ const canvas=html.match(/<div class="music-tag-canvas">[\s\S]*?<\/dl><img[^>]+><\/div><\/div>/)[0];
+ const dom=fixture();t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+ const tag=d.createElement('aside');tag.id='tape-booklet';tag.innerHTML=canvas;d.body.append(tag);
+ const demo={title:'霓虹夜行',artist:'艺术家不详',album:'都会循环',src:'assets/neon-night.mp3',cover:''};
+ w.notesTracks=[demo];
+ const player=fs.readFileSync(path.join(__dirname,'../player.js'),'utf8');
+ const render=player.slice(player.indexOf('function renderBooklet(){'),player.indexOf('// A fixed physical rack'));
+ w.eval("var $=s=>document.querySelector(s),tracks=notesTracks,pulled=0,swapping=false,bookletArtworkVersion=0;"+render+';renderBooklet();');
+ await tick();
+ const notes=()=>['booklet-track-label','booklet-title','booklet-artist','booklet-album'].map(id=>d.getElementById(id).textContent);
+ assert.deepEqual(notes(),['Track','Neon Night','Unknown Artist','City Loops']);
+ assert.match(tag.querySelector('header').textContent,/TAPE NOTES \/ MUSIC/);
+ assert.deepEqual([...tag.querySelectorAll('dt')].map(el=>el.textContent),['Artist','Album']);
+ assert.equal(d.querySelector('#booklet-number').textContent,'01');
+ assert.equal(d.querySelector('#booklet-art').getAttribute('alt'),'Selected tape artwork');
+ w.PocketmanI18n.setLanguage('zh');await tick();
+ assert.deepEqual(notes(),['曲目','霓虹夜行','艺术家不详','都会循环']);
+ w.PocketmanI18n.setLanguage('en');await tick();
+ assert.deepEqual(notes(),['Track','Neon Night','Unknown Artist','City Loops']);
+ assert.equal(demo.title,'霓虹夜行');
+ w.notesTracks[0]={...demo,src:'blob:imported-track',artist:'播放',album:'外观'};w.renderBooklet();await tick();
+ assert.deepEqual(notes(),['Track','霓虹夜行','播放','外观']);
+ w.PocketmanI18n.setLanguage('zh');w.PocketmanI18n.setLanguage('en');await tick();
+ assert.deepEqual(notes(),['Track','霓虹夜行','播放','外观']);
+});

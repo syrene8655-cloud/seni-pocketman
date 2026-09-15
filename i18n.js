@@ -412,7 +412,12 @@ function translate(value){
  if(trim.includes(' · '))return source.replace(trim,trim.split(' · ').map(part=>translate(part)).join(' · '));
  return source;
 }
-const api={translate,english};
+// Only the bundled fictional demo has localized music metadata.
+function bookletMetadata(track,language='en'){
+ if(language==='en'&&track.src==='assets/neon-night.mp3')return {...track,title:'Neon Night',artist:'Unknown Artist',album:'City Loops'};
+ return track;
+}
+const api={translate,english,bookletMetadata};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(typeof document==='undefined')return;
 const storageKey='pocketman.language';
