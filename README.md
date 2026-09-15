@@ -1,5 +1,3 @@
-<p align="center"><img src="assets/brand-pair.svg" width="480" alt="SENI / POCKETMAN"></p>
-
 # 复古磁带播放器 · Retro Cassette Player
 
 > **Noncommercial use only · 请勿商用**
