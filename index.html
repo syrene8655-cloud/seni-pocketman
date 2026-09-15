@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>SENI · POCKETMAN</title><meta name="description" content="SENI / POCKETMAN：可本地运行的磁带音乐播放器。装入音乐，按下播放。"><link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><meta name="application-name" content="SENI · POCKETMAN"><style>
+.entry-loader{display:none}.is-booting body{overflow:hidden}.is-booting main{visibility:hidden;opacity:0}.is-booting .entry-loader{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#fff;color:#252622;padding:24px;box-sizing:border-box}.entry-content{width:min(300px,100%);text-align:center;transform:translateY(-4vh)}.entry-logo{display:block;width:240px;max-width:90%;height:auto;aspect-ratio:6.333;object-fit:contain;margin:0 auto 38px}.entry-mechanism{display:block;width:92px;height:32px;margin:0 auto 22px;color:#62645d}.entry-reel{transform-box:fill-box;transform-origin:center;animation:entry-turn 2.4s linear infinite}.entry-reel:last-child{animation-duration:2.8s}.entry-status{margin:0;font:400 13px/1.7 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;color:#62645d}.entry-actions{margin:18px 0 0;font:400 13px/1.7 -apple-system,BlinkMacSystemFont,sans-serif}.entry-actions a,.entry-actions button{color:#252622;background:none;border:0;font:inherit;text-underline-offset:4px;text-decoration:underline;padding:8px;cursor:pointer}.entry-actions [hidden],.entry-actions[hidden]{display:none}.entry-actions :focus-visible{outline:1px solid currentColor;outline-offset:2px}.is-booting .entry-loader.is-leaving{opacity:0;transition:opacity 320ms ease-out}.is-booting.is-revealing main{visibility:visible;opacity:1}.entry-loader[data-state=error] .entry-reel{animation-play-state:paused}@keyframes entry-turn{to{transform:rotate(360deg)}}@media(max-width:600px){.entry-logo{width:210px;margin-bottom:32px}}@media(prefers-reduced-motion:reduce){.entry-reel{animation:none}.is-booting .entry-loader.is-leaving{transition:none}}
+.entry-progress{position:relative;width:180px;height:1px;margin:16px auto 0;color:#45443f;--loaded:0}.entry-progress:before,.entry-progress>span{content:"";position:absolute;inset:0 0 auto;height:1px;background:currentColor;transform-origin:left}.entry-progress:before{opacity:.35}.entry-progress>span{transform:scaleX(var(--loaded));transition:transform 500ms linear}@media(prefers-reduced-motion:reduce){.entry-progress>span{transition:none}}
+</style>
+<script src="i18n.js?v=1.1.0"></script>
+<script>
+document.documentElement.classList.add('is-booting');
+window.walkmanBoot={started:performance.now(),errors:[],assetProgress:0,finished:false};
+// Page-load timing is independent of the progress estimate and has no persistent user ID.
+(()=>{
+ const boot=walkmanBoot,marks=boot.loadingMarks=Object.create(null),events=new Set(['start','assets_ready','entered','failed','skipped']);
+ boot.markLoading=event=>{
+  if(!events.has(event)||Object.hasOwn(marks,event))return;
+  const ms=Math.max(0,Math.floor(performance.now()-boot.started));marks[event]=ms;
+
+ };
+ boot.markLoading('start');
+})();
+// This line estimates preparation time; full completion is reserved for decoded assets.
+walkmanBoot.tick=function(){
+ const bar=document.getElementById('entry-progress'),box=document.getElementById('entry-loader');
+ if(walkmanBoot.finished||box?.dataset.state==='error')return;
+ if(bar){const elapsed=Math.max(0,performance.now()-walkmanBoot.started),value=Math.min(.96,.9*Math.min(1,elapsed/10000)+.06*walkmanBoot.assetProgress);bar.style.setProperty('--loaded',String(value));bar.setAttribute('aria-valuenow',String(Math.floor(value*100)))}
+ walkmanBoot.progressTimer=setTimeout(walkmanBoot.tick,100);
+};walkmanBoot.tick();
+window.addEventListener('error',function(e){if(e.target&&e.target.matches&&e.target.matches('script[src],link[rel=stylesheet]'))walkmanBoot.errors.push(e.target.src||e.target.href);else if(e.filename)walkmanBoot.errors.push(e.filename);if(!walkmanBoot.finished&&walkmanBoot.errors.length)walkmanBoot.markLoading('failed')},true);
+walkmanBoot.watchdog=setTimeout(function(){const box=document.getElementById('entry-loader');if(!box||!document.documentElement.classList.contains('is-booting'))return;walkmanBoot.markLoading('failed');box.dataset.state='error';document.getElementById('entry-status').textContent='准备时间有点久，可以刷新重试。';document.getElementById('entry-actions').hidden=false},60000);
+</script>
+<link rel="preload" as="image" fetchpriority="high" href="assets/chassis-unbranded-v1.png">
+<link id="player-styles" rel="stylesheet" href="style.css?v=github-seni-pocketman-v2" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="style.css?v=github-seni-pocketman-v2"></noscript></head>
+<body>
+<div id="entry-loader" class="entry-loader" aria-label="正在准备播放器">
+ <div class="entry-content">
+  <img class="entry-logo" src="assets/brand-pocketman.svg" width="532" height="84" alt="POCKETMAN" fetchpriority="high">
+  <svg class="entry-mechanism" viewBox="0 0 92 32" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+   <path d="M17 3h58a13 13 0 0 1 0 26H17a13 13 0 0 1 0-26Z" opacity=".3"/>
+   <path d="M29 16h34" opacity=".45"/>
+   <g class="entry-reel"><circle cx="17" cy="16" r="9"/><circle cx="17" cy="16" r="3"/><path d="M17 7v4m7.8 9-3.5-2M9.2 20l3.5-2"/></g>
+   <g class="entry-reel"><circle cx="75" cy="16" r="9"/><circle cx="75" cy="16" r="3"/><path d="M75 7v4m7.8 9-3.5-2M67.2 20l3.5-2"/></g>
+  </svg>
+  <p id="entry-status" class="entry-status" role="status">正在准备播放器和磁带架，请稍候</p>
+  <div id="entry-progress" class="entry-progress" role="progressbar" aria-label="播放器准备进度（估计）" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+  <div id="entry-actions" class="entry-actions" hidden><a href="">重新加载</a><button id="entry-continue" type="button" hidden>先进入播放器</button></div>
+ </div>
+</div>
+<!-- Extension contract: retain the approved silver cassette player as the focal object.
+Physical playlist: transparent amber-orange upright rack, clear case spines, existing album art and readable names.
+First click pulls a case for inspection; outside click returns it; second click loads it.
+Loading automatically closes the door and plays the selected track. Skip keys keep the immediate path.
+Composition: player centered alone; breathing case silhouette at right reveals rack and moves player left. Closing the loaded lid restores the centered listening view. -->
+<main>
+ <span class="corner-logo" aria-hidden="true"></span>
+ <button id="shelf-toggle" class="shelf-toggle" aria-label="显示磁带架" aria-expanded="false" aria-controls="cassette-rack" title="找一盘磁带">
+ <img class="case-material" src="assets/full-rack-demo.svg" alt="" width="1254" height="1254" draggable="false"><span class="shelf-close-symbol" aria-hidden="true">›</span>
+ </button>
+ <div class="ensemble">
+ <section class="stage" aria-label="复古磁带播放器">
+  <div class="fit"><div id="machine" class="machine" aria-label="SENI / POCKETMAN 磁带机">
+   <div class="chamber"></div><div class="drag-zone" title="拖动整体位置" aria-hidden="true"></div>
+   <div id="door" class="door"><div class="glass"></div><button id="door-close" class="door-close" aria-label="合上盖子并播放" disabled tabindex="-1"></button></div>
+   <div class="lcd"><span id="track-name">霓虹夜行</span><span id="time">00:00 / 01:00</span><input id="seek" type="range" min="0" max="60.029388" value="0" step="0.1" aria-label="播放进度"><span class="status"><i></i><span id="status-text">PAUSED</span></span></div>
+   <button id="cover-open" class="cover-hit" aria-label="查看当前封面" title="查看封面"></button>
+   <input id="volume-wheel" class="wheel-hit" tabindex="-1" type="range" min="0" max="100" value="60" aria-label="音量滚轮" title="上下拖动或滚轮调节音量">
+   <div class="volume-scale">
+    <span class="volume-plus" aria-hidden="true">＋</span>
+    <div class="volume-track">
+     <svg class="volume-ticks" viewBox="0 0 32 100" aria-hidden="true"><path d="M23 1h7M23 11h4M23 21h4M23 31h4M23 41h4M23 50h7M23 59h4M23 69h4M23 79h4M23 89h4M23 99h7"/></svg>
+     <input id="volume-fader" type="range" min="0" max="100" value="60" aria-label="音量推杆" aria-orientation="vertical" aria-valuetext="60%">
+    </div>
+    <span class="volume-minus" aria-hidden="true">－</span>
+    <output id="volume-reading" for="volume-fader" aria-hidden="true">60</output>
+   </div>
+  </div></div>
+ </section>
+ <aside id="cassette-rack" class="rack-region" aria-label="实体播放列表" inert>
+  <section id="tape-booklet" class="tape-booklet" aria-label="选中磁带的资料标签" aria-hidden="true" inert>
+   <div class="music-tag-canvas"><img class="music-tag-paper" data-src="assets/music-tag-paper.2acdf008c605.webp" width="1447" height="1087" alt="" aria-hidden="true">
+   <div class="music-tag-content"><header><span>磁带资料 / MUSIC</span><span id="booklet-number"></span></header><div class="tag-title"><span>曲目</span><h2 id="booklet-title"></h2></div><dl><dt>歌手</dt><dd id="booklet-artist"></dd><dt>专辑</dt><dd id="booklet-album"></dd></dl><img id="booklet-art" data-src="assets/cover-neon-night.8068b0601ad1.webp" alt="选中磁带的专辑封面"></div></div>
+  </section>
+  <button id="rack-previous" class="rack-switch-zone rack-switch-left" aria-label="上一个磁带架" hidden><svg class="rack-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6"/></svg></button><button id="rack-next" class="rack-switch-zone rack-switch-right" aria-label="下一个磁带架" hidden><svg class="rack-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6l6 6-6 6"/></svg></button><div class="rack"><div class="rack-nameplate" aria-label="当前磁带架"><svg class="rack-nameplate-art" viewBox="166 205 1390 482" aria-hidden="true"><defs><clipPath id="rack-paper-outline"><path d="M 270 210 L 1447 223 Q 1455 223 1458 235 L 1551 620 Q 1553 626 1547 630 L 1391 681 L 171 661 Q 169 660 171 650 L 250 229 Q 253 212 270 210 Z"/></clipPath></defs><image data-href="assets/rack-paper-tent.c1f58a847638.webp" width="1708" height="921" clip-path="url(#rack-paper-outline)"/></svg><div class="rack-nameplate-front"><strong id="rack-nameplate-title">My Mix</strong></div></div><img class="rack-photo" data-src="assets/orange-rack-photo.765a07502079.webp" width="1024" height="1536" alt="" draggable="false"><div class="rack-cap"><span>CASSETTES</span><span class="rack-screw" aria-hidden="true"></span></div><div id="rack-slots" class="rack-slots"></div><img class="rack-photo rack-foreground" data-src="assets/orange-rack-photo.765a07502079.webp" width="1024" height="1536" alt="" aria-hidden="true" draggable="false"><img class="rack-photo rack-right-wall" data-src="assets/orange-rack-photo.765a07502079.webp" width="1024" height="1536" alt="" aria-hidden="true" draggable="false"><div class="rack-foot"><span id="rack-count">01 TAPES</span><div id="rack-navigation" class="rack-navigation" hidden><button id="rack-back" aria-label="向前翻看磁带" title="向前翻看"><svg class="rack-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button><span id="rack-range" aria-live="off"></span><button id="rack-forward" aria-label="向后翻看磁带" title="向后翻看"><svg class="rack-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></button></div></div></div>
+  <button id="rack-load-status" class="rack-load-status" type="button" hidden>正在准备磁带架…</button>
+  <p class="rack-hint"><span id="rack-hint">点一下抽出 · 再点装入</span><button id="rack-empty" class="rack-empty" type="button" hidden>添加音乐 →</button></p>
+<div class="rack-session-controls"><span id="rack-number" aria-live="polite"></span><button id="rack-resume" class="text-button" hidden>继续电台</button></div> </aside>
+ </div>
+ <div class="workspace-tools" inert>
+ <nav class="toolbar" aria-label="播放器工具">
+ <button id="library-open" aria-haspopup="dialog" aria-controls="library" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><path d="M8 16h8"/></svg>曲目 <span id="track-count">01</span></button>
+ <button id="appearance-open" aria-haspopup="dialog" aria-controls="appearance" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-4c-1-1 0-3 2-3h2a3 3 0 0 0 3-3 9 9 0 0 0-9-8Z"/><path d="M7 8h.01M12 6h.01M17 9h.01M6 13h.01"/></svg>外观</button>
+ <button id="help-open" aria-label="操作说明" aria-haspopup="dialog" aria-controls="help" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5M12 17h.01"/></svg>帮助</button>
+ </nav>
+ <p class="caption" id="source-note">原创演示曲《霓虹夜行》 · 可连接网易云音乐</p>
+ </div>
+</main>
+<div class="player-feedback" aria-label="播放器提示">
+ <p id="ritual-hint" class="ritual-hint" role="status" aria-atomic="true"></p>
+ <p id="notice" class="notice" role="status" aria-atomic="true"></p>
+ <section id="playback-error" class="playback-error" aria-label="播放遇到问题" hidden>
+  <p id="playback-error-message" role="status" aria-atomic="true"></p>
+  <div class="playback-error-actions"><button id="playback-recover" type="button">重试播放</button><button id="playback-dismiss" type="button" aria-label="关闭播放提示">关闭</button></div>
+ </section>
+</div>
+<dialog id="library" class="t-modal" aria-labelledby="library-title">
+<header class="library-header"><button id="library-back" class="provider-back" hidden>← 我的磁带架</button><h2 id="library-title">曲目</h2><button class="close" aria-label="关闭曲目">×</button></header>
+<nav id="library-tabs" class="library-tabs" aria-label="曲目菜单"><button id="racks-open" aria-pressed="true">我的磁带架 <span id="rack-manager-count">1 / 6</span></button><button id="rack-manager-back" aria-pressed="false">添加音乐</button></nav>
+<div id="library-content">
+<section id="rack-manager" aria-label="我的磁带架"><p id="rack-limit" role="status" hidden>已经有 6 个磁带架了。先移除一个，再添加新的。</p><div id="rack-manager-list"></div><div class="rack-manager-footer"><button id="rack-new" class="text-button">＋ 新建磁带架</button><span class="subtle">最多 6 个磁带架</span></div><button id="rack-import-continue" class="text-button" hidden>继续刚才的添加</button></section>
+<section id="rack-editor" aria-label="整理磁带架" hidden>
+<div class="rack-name-edit"><label for="rack-editor-name">磁带架名称</label><div><input id="rack-editor-name" maxlength="100"><button id="rack-editor-save" class="rack-save">保存</button></div><p id="rack-editor-feedback" class="subtle" role="status"></p></div>
+<div class="rack-editor-heading"><p id="rack-editor-summary" class="subtle"></p><button id="rack-editor-open" class="text-button">在播放器中查看 ↗</button></div>
+<p id="rack-editor-empty" class="rack-empty-state" hidden><span id="rack-editor-empty-text">这里还没有磁带。</span><button id="rack-editor-add" class="text-button">添加音乐 →</button></p><div id="rack-editor-tracks"></div>
+<div class="rack-editor-pager"><button id="rack-editor-prev" aria-label="上一页曲目">←</button><span id="rack-editor-page"></span><button id="rack-editor-next" aria-label="下一页曲目">→</button></div>
+<div class="rack-editor-danger"><button id="rack-delete" class="text-button">移除这个磁带架</button><p class="subtle">仅移除随身听里的列表，不影响音乐平台的歌单和收藏。</p></div>
+</section>
+<div id="library-music" hidden><p id="library-destination" class="subtle"></p><div class="music-providers"><button id="netease-open" class="file-button cloud-entry">从网易云找音乐 <span>每日推荐 · 我的歌单 · 分享链接</span></button><button id="apple-open" class="file-button cloud-entry">从 Apple Music 找音乐 <span>我的电台 · 我的歌单 · 分享链接</span></button></div><div id="track-list" hidden></div><label class="file-button">导入本地音乐<input id="audio-import" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac" multiple></label><p class="subtle">云端歌曲的磁带列表会保存在此浏览器，刷新后自动恢复。本地音频刷新后需重新导入。</p></div>
+</div></dialog>
+<dialog id="appearance" class="t-modal" aria-labelledby="appearance-title"><header><h2 id="appearance-title">摆在你喜欢的地方</h2><button class="close" aria-label="关闭外观">×</button></header><div class="language-setting"><span id="language-label">语言</span><div class="language-options" role="group" aria-labelledby="language-label"><button type="button" data-ui-language="en" lang="en" translate="no" aria-pressed="true">English</button><button type="button" data-ui-language="zh" lang="zh-CN" translate="no" aria-pressed="false">中文</button></div></div><div class="swatches"><button data-bg="#ffffff" aria-label="纯白背景" aria-pressed="true" class="swatch white"></button><button data-bg="#000000" aria-label="纯黑背景" aria-pressed="false" class="swatch black"></button><label class="color-picker">自选颜色<input id="bg-color" type="color" value="#e0d7cc" aria-label="背景颜色"></label></div><label class="file-button">选择背景图片<input id="bg-import" type="file" accept="image/*"></label><label class="setting">整体大小<input id="size" type="range" min="30" max="100" value="70" aria-label="整体大小"></label><label class="setting">音量<input id="volume" type="range" min="0" max="100" value="60" aria-label="音量"></label><button id="position-reset" class="text-button">恢复位置与大小</button></dialog>
+<dialog id="cover-dialog" class="t-modal" aria-labelledby="cover-title"><header><h2 id="cover-title">霓虹夜行</h2><button class="close" aria-label="关闭封面">×</button></header><img id="large-cover" class="large-cover" src="assets/cover-neon-night.8068b0601ad1.webp" alt="当前曲目封面"><p class="plastic-selection"><i id="plastic-swatch" aria-hidden="true"></i>外壳配色 · <span id="plastic-name">烟灰</span></p><p id="cover-description" class="subtle">霓虹夜行 · 都会循环版 · 原创演示曲</p><a id="cover-source-link" class="source-link" target="_blank" rel="noopener noreferrer" hidden>在网易云音乐打开 ↗</a><!-- Reserved cover import hook; not available in the current interface. --><label class="file-button" hidden>更换这首的封面<input id="cover-import" type="file" accept="image/*" disabled></label></dialog>
+<dialog id="help" class="t-modal" aria-labelledby="help-title"><header><h2 id="help-title">用电脑的方式听磁带</h2><button class="close" aria-label="关闭说明">×</button></header><dl><dt>空格</dt><dd>播放 / 暂停</dd><dt>← / →</dt><dd>后退 / 前进 5 秒</dd><dt>LIKE 红键</dt><dd>喜欢当前网易云或 Apple Music 歌曲后保持压下，再按一次取消喜欢并弹起</dd><dt>MODE</dt><dd>单曲循环 → 列表循环 → 随机播放；操作后短暂提示</dd><dt>音量滚轮</dt><dd>上下拖动，或鼠标滚轮调节</dd><dt>右侧满载磁带架</dt><dd>展开 / 收起磁带架</dd><dt>磁带架</dt><dd>点一下抽出，再点装入；点别处收回。上下翻看磁带，左右切换磁带架</dd><dt>STOP / EJECT</dt><dd>停止归零 / 打开磁带仓</dd><dt>磁带空白处</dt><dd>点一下切到 B 面查看专辑资料，再点回 A 面；不打断播放</dd><dt>磁带小封面</dt><dd>查看封面与曲目原链接</dd><dt>金属上沿</dt><dd>拖动整组素材的位置</dd></dl><p class="subtle">开始播放会自动收起磁带架与工具面板，听歌中仍可主动展开选曲。换带会自动合盖并播放选中的曲目。上一首 / 下一首直接切歌。默认演示曲《霓虹夜行》约 1 分钟；也可以导入自己的音乐。</p></dialog>
+<dialog id="netease" class="t-modal" aria-labelledby="netease-title">
+<header class="provider-header"><button type="button" class="provider-back" aria-label="返回曲目菜单"><span aria-hidden="true">←</span> 返回曲目</button><h2 id="netease-title">网易云音乐</h2><button class="close" aria-label="关闭网易云">×</button></header>
+<div class="cloud-account"><span id="cloud-account-name">未登录 · 可以先搜索音乐</span><button id="cloud-login" class="text-button">扫码登录</button><button id="cloud-logout" class="text-button" hidden>退出登录</button></div>
+<section id="cloud-qr" hidden><img id="cloud-qr-image" hidden alt="网易云扫码登录二维码" width="192" height="192"><p id="cloud-qr-status" role="status">正在生成二维码…</p><button id="cloud-qr-refresh" class="text-button">刷新二维码</button></section>
+<form id="cloud-search" class="cloud-form"><label for="cloud-keywords">搜索歌曲或歌手</label><div><input id="cloud-keywords" maxlength="100" placeholder="歌曲名 / 歌手" required><button type="submit">搜索</button></div></form>
+<form id="cloud-playlist" class="cloud-form"><label for="cloud-playlist-id">打开分享歌单</label><div><input id="cloud-playlist-id" maxlength="2000" placeholder="粘贴手机或电脑分享内容 / 歌单编号" required><button type="submit">打开</button></div></form>
+<nav class="cloud-shortcuts" aria-label="网易云收藏与推荐"><button id="cloud-my-playlists" class="text-button" hidden>我的歌单</button><button id="cloud-daily" class="text-button">每日推荐</button></nav>
+<p class="subtle">我的歌单只显示你创建的歌单；其他歌单请粘贴分享链接。</p>
+<p id="cloud-feedback" role="status"></p>
+<div class="cloud-result-heading"><h3 id="cloud-results-title">找到音乐后，加入你的磁带架</h3><button id="cloud-add-page" class="text-button" hidden>加入本页歌曲</button></div>
+<div id="cloud-results"></div><button id="cloud-more" class="file-button" hidden>加载更多</button>
+<p class="subtle">可播放范围以网易云当前账号为准。试听会单独标注。登录失效后重新扫码即可，已保存的磁带列表会保留。</p>
+</dialog>
+<dialog id="apple-music" class="t-modal" aria-labelledby="apple-title">
+<header class="provider-header"><button type="button" class="provider-back" aria-label="返回曲目菜单"><span aria-hidden="true">←</span> 返回曲目</button><h2 id="apple-title">Apple Music</h2><button class="close" aria-label="关闭 Apple Music">×</button></header>
+<div class="cloud-account"><span id="apple-account-name">未连接 · 可以先搜索歌曲</span><button id="apple-login" class="text-button" disabled>连接账号</button><button id="apple-logout" class="text-button" hidden>断开连接</button></div>
+<form id="apple-search" class="cloud-form"><label for="apple-keywords">搜索歌曲或歌手</label><div><input id="apple-keywords" maxlength="100" placeholder="歌曲名 / 歌手" required><button type="submit">搜索</button></div></form>
+<form id="apple-playlist" class="cloud-form"><label for="apple-playlist-url">打开分享歌单</label><div><input id="apple-playlist-url" type="url" maxlength="2000" placeholder="粘贴 Apple Music 歌单链接" required><button type="submit">打开</button></div></form>
+<label class="apple-region" for="apple-storefront">音乐地区 <select id="apple-storefront"><option value="cn">中国大陆</option><option value="tw">台湾</option><option value="hk">香港</option><option value="us">美国</option><option value="jp">日本</option></select></label>
+<nav class="cloud-shortcuts" aria-label="Apple Music 资料库与电台"><button id="apple-station" class="text-button" hidden>我的电台</button><button id="apple-library" class="text-button" hidden>我的歌曲</button><button id="apple-playlists" class="text-button" hidden>我的歌单</button></nav>
+<p class="subtle">我的歌单显示你可编辑的个人歌单；其他歌单请粘贴分享链接。我的电台由 Apple Music 连续推荐。</p>
+<p id="apple-feedback" role="status"></p><div class="cloud-result-heading"><h3 id="apple-results-title">找到音乐后，加入你的磁带架</h3><button id="apple-add-page" class="text-button" hidden>加入本页歌曲</button></div>
+<div id="apple-results"></div><button id="apple-more" class="file-button" hidden>加载更多</button>
+<p class="subtle">完整播放需要 Apple Music 订阅，并在 Apple 弹窗中授权。连接后使用账号所属地区；可播放内容以账号权限为准。LIKE 与 Apple Music 账号收藏同步。</p>
+</dialog>
+<dialog id="rack-import" class="t-modal" aria-labelledby="rack-import-title"><header><h2 id="rack-import-title">放到哪个磁带架？</h2><button class="close" aria-label="取消添加">×</button></header><label>目标磁带架<select id="rack-import-target"></select></label><input id="rack-import-name" aria-label="新磁带架名称" maxlength="100"><label id="rack-import-replace-wrap" hidden><input id="rack-import-replace" type="checkbox">用本次读取的歌曲替换目标架的原有曲目</label><button id="rack-import-submit" class="file-button">加入</button></dialog><audio id="audio" preload="none"></audio><audio id="play-sound" src="assets/key-play.wav" preload="none" hidden></audio><script defer src="geometry.js?v=github-seni-pocketman-v2"></script><script defer src="plastic-palette.js?v=8.31.1-fast-entry"></script><script defer src="vendor/jsmediatags.min.js"></script><script defer src="cover-policy.js?v=8.31.1-cover-loading"></script><script defer src="apple-music.js?v=8.31.1-fast-entry"></script><script defer src="racks.js?v=8.31.1-my-mix"></script><script defer src="vendor/canvas-confetti-1.9.4.js"></script><script defer src="player.js?v=github-seni-pocketman-v2"></script>
+<script defer src="netease.js?v=8.31.1-playback-feedback"></script><script defer src="hardware-controls.js?v=8.31.1-ready-entry"></script>
+</body></html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1536">
+<!-- The front post stays dense; the broad side panel transmits the case color.
+     Both sample the original photograph, preserving its molded highlights. -->
+<path fill="white" fill-opacity=".62" d="M878 176L957 110V1305L878 1425Z"/>
+<path fill="white" d="M826 168L878 168V1428H826Z"/>
+<path fill="white" fill-opacity=".9" d="M878 168L949 109L959 112L888 180Z M946 122L959 112V1306L948 1318Z M878 1403L948 1296L957 1306L880 1428Z"/>
+</svg>

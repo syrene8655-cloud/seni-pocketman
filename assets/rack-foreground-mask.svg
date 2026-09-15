@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1536">
+<!-- Front lip and left post; right wall lives in a separate permanent layer; coordinates follow the unchanged rack photo. -->
+<g fill="white">
+<path d="M0 0H826V198H0Z M0 198H114V1536H0Z"/>
+<path d="M106 377L832 384V408L106 402Z M106 583L832 590V615L106 608Z M106 791L832 802V825L106 816Z M106 997L832 1010V1033L106 1021Z M106 1195L832 1213V1236L106 1219Z M106 1390L832 1403V1536H106Z"/>
+</g></svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1482 1061">
+ <defs><mask id="shell" maskUnits="userSpaceOnUse" x="0" y="0" width="1482" height="1061" style="mask-type:luminance">
+  <rect width="1482" height="1061" fill="white"/>
+  <!-- The cassette aperture stays open underneath the moving cassette and door. -->
+  <rect x="204.35" y="217.33" width="1109.99" height="545.70" rx="18" fill="black"/>
+ </mask></defs>
+ <rect fill="white" x="88" y="78" width="1340" height="935" rx="35" mask="url(#shell)"/>
+</svg>

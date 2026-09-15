@@ -1,0 +1,78 @@
+<p align="center"><img src="assets/brand-pair.svg" width="480" alt="SENI / POCKETMAN"></p>
+
+# Put your music on a tape
+
+> **Noncommercial use only · 请勿商用**
+
+A cassette music player for your browser: a silver deck, spinning white spindles, mechanical buttons and an orange rack for your collection. Built with HTML, CSS, JavaScript and a small local Node.js server.
+
+English · [简体中文](README.zh-CN.md)
+
+## Press play
+
+- Play the included original one-minute demo **霓虹夜行** without signing in.
+- Import your own audio files, with embedded metadata and artwork.
+- Organize tracks in cassette racks, flip tapes to side B, and change shell colors.
+- Play, pause, stop, seek and adjust volume, with mechanical button sounds.
+- Optionally connect your own NetEase Music or Apple Music account.
+
+**English is the default.** Open **Appearance → Language** to switch between English and 中文. Your choice is remembered in this browser. Switching does not reload the page or interrupt playback. Track, artist and custom rack names keep their original text.
+
+The small rack shortcut uses six different AI-generated fictional cassette designs. They are decorative artwork, not six included recordings. Only the original demo song and its artwork ship with the player; music and covers fetched from connected services are not bundled.
+
+<p align="center"><img src="assets/full-rack-demo.svg" width="310" alt="Six fictional cassette designs in an orange rack"></p>
+
+## Run locally
+
+Install **Node.js 22 or newer**, download and extract this repository, then run these commands in the project folder:
+
+```sh
+npm ci --ignore-scripts --no-audit --no-fund
+npm start
+```
+
+Open **http://127.0.0.1:8768/**. On macOS, you can also double-click `启动.command` after installing Node.js.
+
+Use `127.0.0.1`, not `localhost`, for the current origin checks. If the port is busy, run `PORT=8770 npm start` and use that port. Press `Ctrl+C` in the terminal to stop the server.
+
+There is no frontend build step. The complete player requires its Node.js service; opening `index.html` directly or uploading it to GitHub Pages alone does not provide all features.
+
+## Bring your music
+
+**Local files:** import audio in Library. Files are read by your browser. Local file references do not survive a page reload, so you may need to import them again. A saved rack list is not a backup of the audio files.
+
+**NetEase Music:** sign in with a QR code in Library. The server keeps the session in memory; restarting it requires signing in again. Subscription, purchase, preview and region restrictions follow the music service's response.
+
+**Apple Music:** provide your own MusicKit developer credentials and connect an account with playback access. See [optional configuration](docs/configuration.md). No developer private keys or account credentials are included. Live account authorization and DRM playback must be verified with your own configuration.
+
+## Loading and privacy
+
+The loading bar uses a 10-second estimate. The player opens as soon as required assets are ready; after 10 seconds it continues waiting if necessary, with a retry message for prolonged failures.
+
+This edition contains no original production-site telemetry. Optional music features contact their respective providers. The demo audio, visual assets and button sounds are served locally.
+
+## Development
+
+Edit the source and reload the page. Run the tests with:
+
+```sh
+npm test
+```
+
+| File | Purpose |
+| --- | --- |
+| `index.html`, `style.css` | Page and layout |
+| `i18n.js` | English / Chinese UI and saved language choice |
+| `player.js`, `hardware-controls.js` | Playback and physical controls |
+| `racks.js`, `geometry.js` | Cassette racks and asset positioning |
+| `server.cjs` | Local files and music APIs |
+| `assets/`, `vendor/` | Runtime artwork, sounds and vendor notices |
+| `tests/` | Backend and language regression tests |
+
+## License
+
+**Please do not use this project commercially.** Use, study, modification and sharing are permitted for noncommercial purposes under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). This is a source-available release with a noncommercial restriction. See the full license for the terms.
+
+Required Notice: Copyright 2026 syrene8655-cloud
+
+Third-party code and Kenney CC0 sounds retain their own licenses; this project's restriction does not replace those grants. Artwork includes AI-generated and manually prepared assets. See [Third-party notices](THIRD_PARTY_NOTICES.md). The project is not affiliated with the music platforms or hardware manufacturers.
