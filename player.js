@@ -355,10 +355,14 @@ function alignRackNameplate(){
  $('.rack-nameplate-front').style.transform=quadCSSMatrix(face,300,110);
 }
 new ResizeObserver(alignRackNameplate).observe($('.rack-nameplate'));
+function renderRackNameplate(){
+ const rack=rackStore?rackStore.rack():{name:'My Mix'},language=window.PocketmanI18n?.getLanguage()||'en';
+ const title=window.PocketmanI18n?.rackName(rack,language)||rack.name;
+ $('#rack-nameplate-title').textContent=title;$('#rack-nameplate-title').title=title;fitRackName();
+}
+document.addEventListener('pocketman:languagechange',renderRackNameplate);
 function renderRack(){
- const rackTitle=rackStore?rackStore.rack().name:'My Mix';rackViewRows=visibleRackRows();
- $('#rack-nameplate-title').textContent=rackTitle;$('#rack-nameplate-title').title=rackTitle;
- fitRackName();
+ rackViewRows=visibleRackRows();renderRackNameplate();
  spineSizeObserver.disconnect();
  const slots=$('#rack-slots'),position=slots.scrollTop;slots.replaceChildren();slots.classList.toggle('scrollable',false);
  const offset=rackWindowOffset();

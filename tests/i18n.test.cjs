@@ -40,3 +40,19 @@ test('Paper card uses English demo notes, restores Chinese and preserves importe
  w.PocketmanI18n.setLanguage('zh');w.PocketmanI18n.setLanguage('en');await tick();
  assert.deepEqual(notes(),['Track','霓虹夜行','播放','外观']);
 });
+
+test('Daily recommendation nameplate switches languages without changing saved or custom names',async t=>{
+ const dom=fixture();t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+ const daily={name:'每日推荐',source:{provider:'netease',id:'daily'}};w.testRack=daily;
+ const player=fs.readFileSync(path.join(__dirname,'../player.js'),'utf8');
+ const render=player.slice(player.indexOf('function renderRackNameplate(){'),player.indexOf('function renderRack(){'));
+ w.eval("var $=s=>document.querySelector(s),rackStore={rack:()=>testRack},fitCalls=0;function fitRackName(){fitCalls++}"+render+';renderRackNameplate();');
+ await tick();const label=d.querySelector('#rack-nameplate-title');
+ assert.equal(label.textContent,'Daily Picks');assert.equal(label.title,'Daily Picks');assert.equal(daily.name,'每日推荐');
+ w.PocketmanI18n.setLanguage('zh');await tick();assert.equal(label.textContent,'每日推荐');
+ w.PocketmanI18n.setLanguage('en');await tick();assert.equal(label.textContent,'Daily Picks');assert.equal(w.fitCalls,3);
+ daily.nameIsCustom=true;w.renderRackNameplate();await tick();assert.equal(label.textContent,'每日推荐');
+ delete daily.nameIsCustom;daily.name='周末精选';w.renderRackNameplate();await tick();assert.equal(label.textContent,'周末精选');
+ daily.name='每日推荐';daily.source.id='12345';w.renderRackNameplate();await tick();assert.equal(label.textContent,'每日推荐');
+ assert.equal(require('../i18n.js').rackName({name:'每日推荐'},'en'),'每日推荐');
+});

@@ -417,7 +417,11 @@ function bookletMetadata(track,language='en'){
  if(language==='en'&&track.src==='assets/neon-night.mp3')return {...track,title:'Neon Night',artist:'Unknown Artist',album:'City Loops'};
  return track;
 }
-const api={translate,english,bookletMetadata};
+function rackName(rack,language='en'){
+ if(!rack.nameIsCustom&&rack.source?.provider==='netease'&&rack.source.id==='daily'&&['每日推荐','Daily picks','Daily Picks'].includes(rack.name))return language==='en'?'Daily Picks':'每日推荐';
+ return rack.name;
+}
+const api={translate,english,bookletMetadata,rackName};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(typeof document==='undefined')return;
 const storageKey='pocketman.language';
