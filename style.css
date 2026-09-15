@@ -642,3 +642,8 @@ body:not(.browsing):has(.machine.playing) .corner-logo{opacity:.88;visibility:vi
 .language-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:16px 20px;background:#fff;border-radius:18px;font-size:14px}.language-options{display:flex;gap:4px;padding:4px;background:#f0f0f2;border-radius:11px}.language-options button{min-height:36px;min-width:72px;padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#62626b;font:inherit;cursor:pointer}.language-options button[aria-pressed=true]{background:#fff;color:#df001b;box-shadow:0 1px 3px #0001}.language-options button:focus-visible{outline:2px solid #df001b;outline-offset:2px}html[lang=en] .t-modal p,html[lang=en] .t-modal dd{line-height:1.55}html[lang=en] .setting{gap:14px}
 
 .back-caption,.back-source{text-transform:uppercase}
+
+.pages-note{display:none}
+html[data-hosting=pages] .pages-note{display:block}
+html[data-hosting=pages] .music-providers,html[data-hosting=pages] .online-copy{display:none}
+.pages-note a{color:inherit;text-underline-offset:3px;margin-inline:4px}

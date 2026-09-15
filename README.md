@@ -8,6 +8,8 @@ A cassette music player for your browser: a silver deck, spinning white spindles
 
 English · [简体中文](README.zh-CN.md)
 
+[Open the web player](https://syrene8655-cloud.github.io/seni-pocketman/) — play the demo or import local audio. Music service connections are available when running the full version locally.
+
 ## Press play
 
 - Play the included original one-minute demo **霓虹夜行** without signing in.
@@ -35,7 +37,7 @@ Open **http://127.0.0.1:8768/**. On macOS, you can also double-click `启动.com
 
 Use `127.0.0.1`, not `localhost`, for the current origin checks. If the port is busy, run `PORT=8770 npm start` and use that port. Press `Ctrl+C` in the terminal to stop the server.
 
-There is no frontend build step. The complete player requires its Node.js service; opening `index.html` directly or uploading it to GitHub Pages alone does not provide all features.
+The full player requires its Node.js service. `npm run build:pages` creates a static web edition in `.pages-site/`; the Pages workflow publishes it automatically. This edition supports the demo and local audio imports, with music service connections available in the locally running full version.
 
 ## Bring your music
 

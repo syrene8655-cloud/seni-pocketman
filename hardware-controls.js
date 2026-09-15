@@ -103,7 +103,7 @@ preferenceKeys.like.onclick=async()=>{
 renderLikeKey();
 // Restore latch state from this browser's server session without opening a dialog.
 const initialLikeVersion=likeSyncVersion;
-void readLikedSongs().catch(()=>{if(initialLikeVersion===likeSyncVersion)renderLikeKey()});
+if(!isPagesDemo)void readLikedSongs().catch(()=>{if(initialLikeVersion===likeSyncVersion)renderLikeKey()});
 void refreshAppleLike();
 
 // Entry loading: keep this in the existing served bundle.

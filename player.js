@@ -1,4 +1,5 @@
 'use strict';
+const isPagesDemo=document.documentElement.dataset.hosting==='pages';
 const $=s=>document.querySelector(s), audio=new WalkmanAudio($('#audio')), machine=$('#machine'), fit=$('.fit');
 const layers=new Map(), tracks=[
  {title:'霓虹夜行',src:'assets/neon-night.mp3',cover:'assets/cover-neon-night.8068b0601ad1.webp',artist:'艺术家不详',album:'都会循环',year:'不详',duration:60.029388,variant:'sunset',edition:'neon',printStyle:'studio',spineStyle:'colour',plastic:plasticPalette[4],coverInfo:{src:'assets/cover-neon-night.8068b0601ad1.webp',valid:true,width:1254,height:1254},description:'霓虹夜行 · 都会循环版 · 原创演示曲'}
@@ -470,7 +471,7 @@ function updateCoverSource(track){
 }
 function artUI({animate=true}={}){renderBackDetails();const t=displayTrack(tracks[current]), forest=t.variant==='forest';updateCoverSource(t);label.querySelector('img').src=forest?'assets/album-label-forest.f7c07bdec378.webp':'assets/album-label.f038d7dc76ca.webp';shell.querySelector('img').src='assets/cassette-shell.3d71f41337e9.webp';
  renderCoverTreatment();
- $('#track-name').textContent=t.title;$('#track-name').title=t.title;$('#cover-title').textContent=t.title;$('#large-cover').src=t.cover;$('#cover-description').textContent=t.description;$('#source-note').textContent=t.provider==='apple'?(t.station?'Apple Music · '+t.stationName:'Apple Music · 音乐由 Apple Music 提供'):t.provider==='netease'?'网易云音乐'+(t.trial?' · 当前为试听片段':''):t.local?'本地音乐 · 仅在此浏览器中播放':'原创演示曲 · 从曲目中连接网易云 / Apple Music';
+ $('#track-name').textContent=t.title;$('#track-name').title=t.title;$('#cover-title').textContent=t.title;$('#large-cover').src=t.cover;$('#cover-description').textContent=t.description;$('#source-note').textContent=isPagesDemo?'网页版 · 播放演示曲或导入本地音乐':t.provider==='apple'?(t.station?'Apple Music · '+t.stationName:'Apple Music · 音乐由 Apple Music 提供'):t.provider==='netease'?'网易云音乐'+(t.trial?' · 当前为试听片段':''):t.local?'本地音乐 · 仅在此浏览器中播放':'原创演示曲 · 从曲目中连接网易云 / Apple Music';
  if(animate&&!reduceMotion.matches)label.animate([{opacity:.25},{opacity:1}],{duration:320,easing:'ease-out'});renderTracks();
 }
 document.addEventListener('pocketman:languagechange',()=>{artUI({animate:false});if(rackUIReady&&managedRackId&&libraryPage==='editor')renderRackEditor()});

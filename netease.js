@@ -1,5 +1,6 @@
 'use strict';
 async function neteaseRequest(route,body={}, {timeoutMs=25000}={}){
+ if(isPagesDemo)throw new Error('连接音乐平台请下载完整版本。');
  let response;try{response=await fetch('/api/netease/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Cassette-Client':'1'},body:JSON.stringify(body),signal:AbortSignal.timeout(timeoutMs)})}catch{throw Object.assign(new Error('连接超时，请检查网络后重试。'),{name:'NetworkError'})}
  let data;try{data=await response.json()}catch{throw new Error('音乐服务暂时没有响应，请稍后重试。')}
  if(!response.ok)throw Object.assign(new Error(data.error||'网易云暂时不可用，请稍后重试。'),{status:response.status});if(Array.isArray(data.items))for(const item of data.items)if(item.cover)item.cover=neteaseArtwork(item.cover);return data;

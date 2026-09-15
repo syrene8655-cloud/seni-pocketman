@@ -2,6 +2,12 @@
 // Presentation-only localization. Music metadata and saved rack names remain unchanged.
 (function(){
 const english={
+ "本地音频刷新后需重新导入。": "Import your local audio files again after reloading.",
+ "网页版支持演示曲与本地音乐。": "Play the demo or import your own audio here.",
+ "下载完整版本": "Download the full version",
+ "可连接网易云与 Apple Music。": "to connect NetEase Music and Apple Music.",
+ "网页版 · 播放演示曲或导入本地音乐": "Web demo · Play the demo or import your own audio",
+ "连接音乐平台请下载完整版本。": "Download the full version to connect music services.",
  "盒式磁带": "COMPACT CASSETTE",
  "立体声": "STEREO",
  "磁带": "CASSETTE",

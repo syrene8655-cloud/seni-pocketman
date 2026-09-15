@@ -8,6 +8,8 @@ A tactile cassette player for your browser. Load a tape, press play, and take yo
 
 [English](README.md) · 简体中文
 
+[打开网页版](https://syrene8655-cloud.github.io/seni-pocketman/)：可播放演示曲、导入本地音乐。连接网易云和 Apple Music 请在本地运行完整版本。
+
 ## 可以做什么
 
 - 直接播放内置原创演示曲《霓虹夜行》，无需登录。
@@ -33,7 +35,7 @@ npm start
 
 使用 `127.0.0.1` 访问；当前来源校验不接受 `localhost`。端口冲突时可执行 `PORT=8770 npm start`，并访问相应端口。终端按 `Ctrl+C` 停止。
 
-这是 HTML / CSS / JavaScript 前端与 Node.js 服务组成的项目。完整功能需要本地服务，不能通过双击 `index.html` 或仅上传 GitHub Pages 来运行。
+完整版本需要 Node.js 服务。运行 `npm run build:pages` 会在 `.pages-site/` 生成支持演示曲和本地音乐的静态网页版，GitHub Pages 工作流会自动发布；音乐平台连接功能保留在本地完整版。
 
 ## 音乐服务
 

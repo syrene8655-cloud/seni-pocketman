@@ -2,6 +2,7 @@
 // MusicKit owns protected playback and user authorization. No private key is sent here.
 const appleMusic={instance:null,pending:null,expiresAt:0,
  async ready(){
+  if(document.documentElement.dataset.hosting==='pages')throw new Error('连接音乐平台请下载完整版本。');
   if(this.instance&&Date.now()<this.expiresAt-60000)return this.instance;
   if(this.pending)return this.pending;
   this.pending=(async()=>{
