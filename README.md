@@ -71,8 +71,8 @@ npm test
 
 ## License
 
-**Please do not use this project commercially.** Use, study, modification and sharing are permitted for noncommercial purposes under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). This is a source-available release with a noncommercial restriction. See the full license for the terms.
+This is a source-available project. See the [license](LICENSE.md) for the terms.
 
 Required Notice: Copyright 2026 syrene8655-cloud
 
-Third-party code and Kenney CC0 sounds retain their own licenses; this project's restriction does not replace those grants. Artwork includes AI-generated and manually prepared assets. See [Third-party notices](THIRD_PARTY_NOTICES.md). The project is not affiliated with the music platforms or hardware manufacturers.
+Third-party code and Kenney CC0 sounds retain their own licenses. Artwork includes AI-generated and manually prepared assets. See [Third-party notices](THIRD_PARTY_NOTICES.md). The project is not affiliated with the music platforms or hardware manufacturers.

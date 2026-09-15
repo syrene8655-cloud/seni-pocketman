@@ -2,8 +2,6 @@
 
 # 把音乐装进一盘磁带
 
-> **请勿商用 / Noncommercial use only.**
-
 SENI / POCKETMAN 是一个可以在本地运行的磁带音乐播放器。银色机身、会转动的白色轴、机械按钮和橙色磁带架，把熟悉的听歌动作带回浏览器。
 
 A tactile cassette player for your browser. Load a tape, press play, and take your time.
@@ -70,8 +68,8 @@ npm test
 
 ## 许可
 
-**允许非商业使用、学习、修改和分享；商业使用未获授权。** 本项目采用 [PolyForm Noncommercial 1.0.0](LICENSE.md)，因此按「源码公开 / source-available」发布，而非允许商业使用的开放源代码许可。具体授权以许可全文为准。
+本项目以源码公开形式发布，使用条款见 [许可证](LICENSE.md)。
 
 Required Notice: Copyright 2026 syrene8655-cloud
 
-项目内第三方代码和 Kenney 按键音保留各自许可，不受本项目新增的商业限制替代。视觉素材包含 AI 辅助生成与人工处理内容；素材来源和分发范围见 [第三方说明](THIRD_PARTY_NOTICES.md)。SENI / POCKETMAN 是本项目的显示名称，不代表与音乐平台或硬件厂商存在合作关系。
+项目内第三方代码和 Kenney 按键音保留各自许可。视觉素材包含 AI 辅助生成与人工处理内容；素材来源和分发范围见 [第三方说明](THIRD_PARTY_NOTICES.md)。SENI / POCKETMAN 是本项目的显示名称，不代表与音乐平台或硬件厂商存在合作关系。
