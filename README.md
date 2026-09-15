@@ -12,6 +12,14 @@ English · [简体中文](README.zh-CN.md)
 
 [Open the web player](https://syrene8655-cloud.github.io/seni-pocketman/) — play the demo or import local audio. Music service connections are available when running the full version locally.
 
+## Screenshots
+
+Screenshots of the full local version. Music service connections require the local server.
+
+![Cassette player with tape rack and track notes](docs/screenshots/player-overview.png)
+
+![Music library with NetEase Music, Apple Music and local audio import](docs/screenshots/music-library.png)
+
 ## Press play
 
 - Play the included original one-minute demo **霓虹夜行** without signing in.

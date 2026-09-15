@@ -12,6 +12,14 @@ A tactile cassette player for your browser. Load a tape, press play, and take yo
 
 [打开网页版](https://syrene8655-cloud.github.io/seni-pocketman/)：可播放演示曲、导入本地音乐。连接网易云和 Apple Music 请在本地运行完整版本。
 
+## 界面预览
+
+以下为本地完整版截图，音乐平台连接功能需要运行本地服务。
+
+![复古磁带播放器、磁带架与曲目信息卡](docs/screenshots/player-overview.png)
+
+![音乐资料库：网易云音乐、Apple Music 与本地音频导入](docs/screenshots/music-library.png)
+
 ## 可以做什么
 
 - 直接播放内置原创演示曲《霓虹夜行》，无需登录。
