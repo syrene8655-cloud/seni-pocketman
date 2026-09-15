@@ -30,8 +30,6 @@ A tactile cassette player for your browser. Load a tape, press play, and take yo
 
 首次打开默认英文，可在「外观 → 语言」中切换中文 / English，选择会保存在浏览器中，切换不打断播放。
 
-默认仅包含一首演示音乐及其封面。联网后显示的歌曲、专辑封面由你连接的音乐服务提供，不随本仓库分发。
-
 ## 本地运行
 
 安装 **Node.js 22 或更高版本**，下载本仓库并解压，在项目目录执行：

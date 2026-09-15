@@ -30,8 +30,6 @@ Screenshots of the full local version. Music service connections require the loc
 
 **English is the default.** Open **Appearance → Language** to switch between English and 中文. Your choice is remembered in this browser. Switching does not reload the page or interrupt playback. Track, artist and custom rack names keep their original text.
 
-The small rack shortcut uses six different AI-generated fictional cassette designs. They are decorative artwork, not six included recordings. Only the original demo song and its artwork ship with the player; music and covers fetched from connected services are not bundled.
-
 <p align="center"><img src="assets/full-rack-demo.svg" width="310" alt="Six fictional cassette designs in an orange rack"></p>
 
 ## Run locally
