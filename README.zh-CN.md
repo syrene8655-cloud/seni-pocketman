@@ -1,8 +1,10 @@
 <p align="center"><img src="assets/brand-pair.svg" width="480" alt="SENI / POCKETMAN"></p>
 
-# 把音乐装进一盘磁带
+# 复古磁带播放器
 
-SENI / POCKETMAN 是一个可以在本地运行的磁带音乐播放器。银色机身、会转动的白色轴、机械按钮和橙色磁带架，把熟悉的听歌动作带回浏览器。
+SENI / POCKETMAN 是一款以复古随身听为灵感、采用磁带播放器皮肤的网页音乐播放器。银色机身、会转动的白色轴、机械按钮和橙色磁带架，把熟悉的听歌动作带回浏览器。本地完整版可连接苹果音乐（Apple Music）与网易云音乐。
+
+**关键词：** 音乐播放器 · 播放器皮肤 · 随身听 · 磁带 · 复古 · 苹果音乐 · 网易云音乐
 
 A tactile cassette player for your browser. Load a tape, press play, and take your time.
 

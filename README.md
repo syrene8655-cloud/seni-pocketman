@@ -1,10 +1,12 @@
 <p align="center"><img src="assets/brand-pair.svg" width="480" alt="SENI / POCKETMAN"></p>
 
-# Put your music on a tape
+# 复古磁带播放器 · Retro Cassette Player
 
 > **Noncommercial use only · 请勿商用**
 
-A cassette music player for your browser: a silver deck, spinning white spindles, mechanical buttons and an orange rack for your collection. Built with HTML, CSS, JavaScript and a small local Node.js server.
+SENI / POCKETMAN is a retro music player with a cassette player skin inspired by portable stereos: a silver deck, spinning white spindles, mechanical buttons and an orange rack for your collection. Built with HTML, CSS, JavaScript and a small local Node.js server. The full local version can connect to Apple Music and NetEase Cloud Music.
+
+**关键词 / Keywords:** 音乐播放器 · 播放器皮肤 · 随身听 · 磁带 · 复古 · 苹果音乐（Apple Music）· 网易云音乐（NetEase Cloud Music）
 
 English · [简体中文](README.zh-CN.md)
 
